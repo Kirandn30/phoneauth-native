@@ -1,20 +1,39 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { Button, Text, View } from 'react-native';
+import FirebaseOTP from './src';
+import { Firebase } from './config';
 
 export default function App() {
+
+  const [user, setUser] = useState<any | null>(null)
+
+  Firebase.auth().onAuthStateChanged(User => {
+    if (User) {
+      setUser(User)
+    } else {
+      setUser(null)
+    }
+  })
+  console.log(user);
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
+    <View className="flex-1 items-center justify-center bg-green-100">
+      {
+        user ? (
+          <View>
+            <Text>Logged in phone number is {user.phoneNumber}</Text>
+            <Button
+              onPress={() => {
+                Firebase.auth().signOut()
+              }}
+              title='signout'
+            />
+          </View>
+        ) : (
+          <FirebaseOTP />
+        )
+      }
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
