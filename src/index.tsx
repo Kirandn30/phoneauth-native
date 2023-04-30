@@ -1,4 +1,4 @@
-import { Alert, Text, View, TextInput, Button } from 'react-native'
+import { Alert, Text, View, TextInput, Button, Image } from 'react-native'
 import React, { useState, useRef } from 'react'
 import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha"
 import { Firebase, firebaseConfig } from '../config'
@@ -46,7 +46,18 @@ const FirebaseOTP = () => {
                     cancelLabel='Close'
 
                 />
-                <Text>
+                <Image
+                    className='h-11'
+                    source={require('../assets/loginMain.png')}
+                />
+                <View
+                >
+                    <Image
+                        className='h-10'
+                        source={require('../assets/meat4u.png')}
+                    />
+                </View>
+                <Text className='font-extrabold text-red-800'>
                     Login with Phone
                 </Text>
                 <TextInput
@@ -59,6 +70,7 @@ const FirebaseOTP = () => {
                     title='Send Code'
                     onPress={sendVerificationCode}
                 />
+
             </View>) : (
                 <View>
                     <Text>
