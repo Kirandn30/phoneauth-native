@@ -1,95 +1,44 @@
-import { Alert, Text, View, TextInput, Button, Image } from 'react-native'
-import React, { useState, useRef } from 'react'
-import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha"
-import { Firebase, firebaseConfig } from '../config'
+import { View, Text } from 'react-native'
+import React from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { Firebase } from '../config'
+import { setUser } from './redux/UserSlice'
+import { extendTheme } from 'native-base'
+import { RootState } from './redux'
+import UserDetails from './pages/userDetails'
+import FirebaseOTP from './pages/Auth'
 
-const FirebaseOTP = () => {
+const Pages = () => {
+    const { User } = useSelector((state: RootState) => state.User)
+    const dispatch = useDispatch()
 
-    const [phoneNumber, setPhoneNumber] = useState<null | string>(null)
-    const [code, setCode] = useState<null | string>(null)
-    const recaptchaVerifier = useRef<undefined | any>(undefined)
-    const [verificationId, setVerificationId] = useState<any>(null)
-
-    const sendVerificationCode = async () => {
-        try {
-            if (!phoneNumber || !recaptchaVerifier.current) return
-            const phoneProvider = new Firebase.auth.PhoneAuthProvider()
-            const id = await phoneProvider.verifyPhoneNumber(phoneNumber, recaptchaVerifier.current)
-            setVerificationId(id)
-            setPhoneNumber(null)
-        } catch (error: any) {
-            Alert.alert((error.message));
-            console.log(error);
+    Firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+            dispatch(setUser(user))
+        } else {
+            dispatch(setUser(null))
         }
-    }
+    })
 
-    const confirmVerificationCode = async () => {
-        try {
-            if (!verificationId || !code) return
-            const credential = Firebase.auth.PhoneAuthProvider.credential(verificationId, code)
-            await Firebase.auth().signInWithCredential(credential)
-            setCode(null)
-        } catch (error: any) {
-            Alert.alert(error.message);
-            console.log(error);
-        }
+    if (User) {
+        console.log(console.log("jdlknsdslkndslkvndsklndslkvndkdsv", User));
+
+    } else {
+        console.log("no user");
+
     }
 
     return (
-        <View>
-            {!verificationId ? (<View>
-                <FirebaseRecaptchaVerifierModal
-                    ref={recaptchaVerifier}
-                    firebaseConfig={firebaseConfig}
-                    attemptInvisibleVerification={true}
-                    title='Prove you are human!'
-                    cancelLabel='Close'
-
-                />
-                <Image
-                    className='h-11'
-                    source={require('../assets/loginMain.png')}
-                />
-                <View
-                >
-                    <Image
-                        className='h-10'
-                        source={require('../assets/meat4u.png')}
-                    />
-                </View>
-                <Text className='font-extrabold text-red-800'>
-                    Login with Phone
-                </Text>
-                <TextInput
-                    placeholder='Phone number with country code'
-                    onChangeText={setPhoneNumber}
-                    keyboardType='phone-pad'
-                    autoComplete='tel'
-                />
-                <Button
-                    title='Send Code'
-                    onPress={sendVerificationCode}
-                />
-
-            </View>) : (
-                <View>
-                    <Text>
-                        Enter OTP
-                    </Text>
-                    <TextInput
-                        placeholder='Enter OTP'
-                        onChangeText={setCode}
-                        keyboardType='phone-pad'
-                        autoComplete='tel'
-                    />
-                    <Button
-                        title='Verfiy'
-                        onPress={confirmVerificationCode}
-                    />
-                </View>
-            )}
+        <View className="h-screen mt-12">
+            {
+                User ? (
+                    <UserDetails />
+                ) : (
+                    <FirebaseOTP />
+                )
+            }
         </View>
     )
 }
 
-export default FirebaseOTP
+export default Pages
