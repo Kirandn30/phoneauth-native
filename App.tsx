@@ -1,6 +1,6 @@
-import { StatusBar } from 'expo-status-bar';
+import 'react-native-gesture-handler';
 import React, { useState } from 'react';
-import { Button, Text, View, DeviceEventEmitter, Platform } from 'react-native';
+import { Button, Text, View, DeviceEventEmitter, Platform, TouchableWithoutFeedback } from 'react-native';
 import FirebaseOTP from './src/pages/Auth';
 import { Firebase } from './config';
 import { NativeBaseProvider, extendTheme } from 'native-base';
@@ -10,27 +10,9 @@ import { RootState, store } from './src/redux';
 import { useSelector, useDispatch } from 'react-redux'
 import { setUser } from './src/redux/UserSlice';
 import Pages from './src';
+import { Keyboard } from 'react-native'
 
 export default function App() {
-
-  const theme = extendTheme({
-    colors: {
-      // Add new color
-      primary: {
-        50: "#202326FF",
-        100: "#202326FF",
-      },
-      // Redefining only one shade, rest of the color will remain same.
-      amber: {
-        400: "#F7F7F8FF",
-      },
-    },
-    config: {
-      // Changing initialColorMode to 'dark'
-      initialColorMode: "light",
-    },
-  });
-
   return (
     <Provider store={store}>
       <NativeBaseProvider theme={theme}>
@@ -39,3 +21,18 @@ export default function App() {
     </Provider>
   );
 }
+
+const theme = extendTheme({
+  colors: {
+    primary: {
+      50: "#202326FF",
+      100: "#202326FF",
+    },
+    amber: {
+      400: "#F7F7F8FF",
+    },
+  },
+  config: {
+    initialColorMode: "light",
+  },
+});

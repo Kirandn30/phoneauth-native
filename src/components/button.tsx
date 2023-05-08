@@ -3,8 +3,6 @@ import React from 'react'
 import { Button } from "native-base";
 
 const ButtonCompo = ({ handelClick, text, disable, loading }: { loading: boolean, handelClick: () => void, text: string, disable: boolean }) => {
-    console.log(disable);
-
     return (
         <View>
             <Button
