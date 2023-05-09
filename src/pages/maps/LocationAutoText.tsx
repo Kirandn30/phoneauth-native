@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TextInput, FlatList, SafeAreaView, ScrollView, Pressable, Alert } from 'react-native';
 import { debounce } from 'lodash';
 import { Firebase } from '../../../config';
-import { Divider, Icon, Input } from 'native-base';
+import { Divider, Icon, Input, Spinner } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
 import { setLocation, setPlaceName } from '../../redux/Mapslice';
 import { useDispatch } from 'react-redux';
@@ -22,6 +22,7 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = () => {
     const [query, setQuery] = useState('');
     const [suggestions, setSuggestions] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
+    const [loadingItem, setLoadingItem] = useState<string|null>(null)
     const navigation = useNavigation();
     const dispatch = useDispatch()
 
@@ -50,10 +51,12 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = () => {
     const renderSuggestion = (item: any) => {
         return (
             <Pressable
+                disabled={loading}
                 onPress={async () => {
                     try {
+                        setLoading(true)
+                        setLoadingItem(item.description)
                         const response = await getLongAndLat({ placeId: item.placeId });
-                        console.log(response);
                         dispatch(setLocation({
                             latitude: response.data.latitude,
                             longitude: response.data.longitude,
@@ -64,15 +67,24 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = () => {
                         Alert.alert("Error")
                         console.log(error);
 
+                    } finally {
+                        setLoading(false)
                     }
                 }}>
-                <View >
-                    <View className='p-2 py-5 w-full flex flex-row gap-4'>
-                        <Icon className='self-center text-red-500' size={6} as={<Entypo name="location" size={24} color="black" />} />
-                        <Text className='font-normal text-lg text-gray-500'>{item.description}</Text>
+                <View className='bg-white rounded-lg mb-2 border-solid border-[1px] border-gray-300 shadow-md h-14'>
+                    <View className='p-2 w-full flex flex-row gap-2'>
+                        <Icon className='self-center text-red-500 w-8' size={6} as={<Entypo name="location" size={24} color="black" />} />
+                        <Text numberOfLines={2} className='font-normal text-gray-700 w-3/4 leading-5 tracking-wide self-center'>{item.description}</Text>
+                        {loading && loadingItem === item.description ? (
+                        <View className='flex justify-center'>
+                            <Spinner color="rgb(55,65,81)" />
+                        </View>
+                        ) : (
+                        <Text></Text>
+                        )}
                     </View>
                 </View>
-                <Divider />
+                {/* <Divider /> */}
             </Pressable>
         );
     };
@@ -182,3 +194,15 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
 });
+
+// const NativeSpliner = ({ loading, item, suggestions }: {
+//     loading: boolean
+//     item: any
+//     suggestions: any[]
+// }) => {
+//     console.log(suggestions.find(one => one.description === item.description));
+
+//     return (
+        
+//     )
+// }
