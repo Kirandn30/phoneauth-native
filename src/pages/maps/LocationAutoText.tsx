@@ -5,12 +5,13 @@ import { Firebase } from '../../../config';
 import { Divider, Icon, Input, Spinner } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
 import { setLocation, setPlaceName } from '../../redux/Mapslice';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
+import { RootState } from '../../redux';
 
 interface LocationAutocompleteProps { }
 
@@ -25,10 +26,22 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = () => {
     const [loadingItem, setLoadingItem] = useState<string|null>(null)
     const navigation = useNavigation();
     const dispatch = useDispatch()
+    const { User } = useSelector((state: RootState) => state.User)
+    const [addresses, setAddresses] = useState<any[]>([])
 
     const handleQueryChange = (text: string) => {
         setQuery(text);
     };
+
+
+    useEffect(() => {
+        if (!User) return
+        Firebase.firestore().collection("Address").where("userId", "==", User.uid).get()
+            .then((res) => {
+                setAddresses(res.docs.map(doc => ({ ...doc.data(), id: doc.id })))
+            })
+    }, [])
+
 
 
     const debouncedCallback = debounce(async (text: string) => {
@@ -47,6 +60,22 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = () => {
             debouncedCallback(query);
         }
     }, [query]);
+
+    const renderAddressSuggestion = (item: any) => {
+        return (
+            <Pressable onPress={() => {
+                dispatch(setPlaceName(item.addressName))
+                dispatch(setLocation(item.location))
+                //@ts-ignore
+                navigation.navigate('home')
+            }}>
+                <View className='p-3 py-1 border-solid border-[1px] border-gray-300 rounded-lg space-y-1 bg-red-50 my-1'>
+                    <Text className='text-lg font-semibold '>{item.addressName}</Text>
+                    <Text>{item.placeName}</Text>
+                </View>
+            </Pressable>
+        )
+    }
 
     const renderSuggestion = (item: any) => {
         return (
@@ -164,7 +193,16 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = () => {
                                     <Text className='text-md text-red-300'>Using GPS</Text>
                                 </View>
                             </View>
-                        </Pressable>
+                            </Pressable>
+                            <View className='mt-5'>
+                                <FlatList
+                                    keyboardShouldPersistTaps='always' //open keyboard
+                                    data={addresses}
+                                    renderItem={({ item }) => renderAddressSuggestion(item)}
+                                    keyExtractor={(item) => item.id}
+                                    className='mt-3'
+                                />
+                            </View>
                     </View>
                 )
             }

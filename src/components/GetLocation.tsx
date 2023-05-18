@@ -65,7 +65,7 @@ const LocationAccess = () => {
                 <Pressable onPress={() => navigation.navigate("Your Location")}>
                     <HStack className='ml-3'>
                         <Icon color="red.500" size={5} as={<Ionicons name="location-outline" size={24} color="black" />} />
-                        <Text className='mt-[1px] ml-1' numberOfLines={1} ellipsizeMode="tail" style={{ width: 100 }}>
+                        <Text className='mt-[1px] ml-1' numberOfLines={1} ellipsizeMode="tail" style={{ maxWidth: 100, minWidth: 30 }}>
                             {placeName}
                         </Text>
                         <Icon className='mt-[5px] ml-1 animate-pulse' size={3} as={<AntDesign name="down" size={24} color="black" />} />

@@ -1,32 +1,4 @@
-// import * as React from 'react'
-// import { Keyboard, KeyboardAvoidingView, Platform, StyleSheet, TouchableWithoutFeedback } from 'react-native'
-
-// type Props = {
-//     children: React.ReactNode
-// }
-
-// export const KeyboardShift = ({ children }: Props) => {
-//     return (
-//         <KeyboardAvoidingView
-//             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-//             style={styles.container}
-//         >
-//             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-//                 {children}
-//             </TouchableWithoutFeedback>
-//         </KeyboardAvoidingView>
-//     )
-// }
-
-// const styles = StyleSheet.create({
-//     container: {
-//         backgroundColor: "#fff",
-//         // alignItems: "center",
-//         // justifyContent: "center",
-//         marginBottom: 100
-//     },
-// });
-
+import { Center, VStack } from 'native-base';
 import React from 'react';
 import {
     View,
@@ -45,11 +17,16 @@ const CustomKeyboardAvoidingView = ({ children }: Props) => {
     const keyboardBehavior = Platform.OS === 'ios' ? 'padding' : 'height';
 
     return (
-        <KeyboardAvoidingView
-            style={styles.container}
-            behavior={keyboardBehavior}
-            keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}>
+        //@ts-ignore
+        <KeyboardAvoidingView h={{
+            base: "400px",
+            lg: "auto"
+        }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+            <Center>
+                <VStack flex="1" justifyContent="flex-end" w="100%" maxW="300">
             {children}
+                </VStack>
+            </Center>
         </KeyboardAvoidingView>
     );
 };
@@ -57,8 +34,8 @@ const CustomKeyboardAvoidingView = ({ children }: Props) => {
 
 const styles = StyleSheet.create({
     container: {
-        alignItems: "center",
-        justifyContent: "center"
+        flex: -1,
+        justifyContent: 'center',
     },
 });
 

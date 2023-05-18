@@ -1,12 +1,10 @@
-import { Alert, Text, View, TextInput, Platform, KeyboardAvoidingView, StyleSheet, ScrollView, TouchableWithoutFeedback, Keyboard, DeviceEventEmitter } from 'react-native'
-import React, { useState, useRef, useEffect } from 'react'
+import { Text, View, TouchableWithoutFeedback, Keyboard } from 'react-native'
+import React, { useState, useRef } from 'react'
 import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha"
 import { Firebase, firebaseConfig } from '../../config'
-import { Input, Image, Button, Icon, Checkbox, FormControl } from "native-base";
+import { Input, Image, Icon, Checkbox, FormControl } from "native-base";
 import { Feather, EvilIcons, AntDesign } from "@expo/vector-icons";
 import ButtonCompo from '../components/button';
-import { RootState } from '../redux';
-import { useSelector, useDispatch } from 'react-redux'
 import CustomKeyboardAvoidingView from '../components/keyboardAvoid';
 
 const PhoneAuth = () => {
@@ -85,8 +83,8 @@ const PhoneAuth = () => {
                                 </View>
                             </View>
                             <CustomKeyboardAvoidingView>
-                                <View className='w-4/5 m-auto mt-10 space-y-3'>
-                                    <View>
+                                <View className='w-4/5 m-auto mt-10 space-y-3 h-48'>
+                                    {!verificationId && <View>
                                         <FormControl isInvalid={notValid} >
                                             <FormControl.Label>Phone Number</FormControl.Label>
                                             <Input
@@ -113,7 +111,7 @@ const PhoneAuth = () => {
                                                 Enter a valid phone number.
                                             </FormControl.ErrorMessage>
                                         </FormControl>
-                                    </View>
+                                    </View>}
                                     {verificationId && <View>
                                         <FormControl isInvalid={validOTP} >
                                             <FormControl.Label>OTP</FormControl.Label>

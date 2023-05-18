@@ -1,4 +1,4 @@
-import { Badge, Button, Divider, Drawer, Icon, Text, View } from "native-base";
+import { Badge, Box, Button, CheckIcon, Divider, Drawer, FormControl, Icon, Input, Select, Text, VStack, View } from "native-base";
 import { Alert, StyleSheet } from "react-native";
 import MapView from "react-native-maps";
 import { Ionicons } from '@expo/vector-icons';
@@ -11,11 +11,17 @@ import ButtonCompo from "./button";
 import { useNavigation } from "@react-navigation/native";
 import { MaterialIcons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
+import * as Yup from "yup"
+import { Formik } from "formik";
 
 export const MapComponent = () => {
-    const { location } = useSelector((state: RootState) => state.Location)
+    const { location, placeName } = useSelector((state: RootState) => state.Location)
     const [currentAdress, setCurrentAdress] = useState<null | string>(null)
     const dispatch = useDispatch()
+    const [loading, setLoading] = useState(false)
+    const nativate = useNavigation()
+    const { User } = useSelector((state: RootState) => state.User)
+
     // const [loading, setLoading] = useState(false)
     const [isOpen, setIsOpen] = useState(false);
     const onRegionChangeComplete = (newRegion: any) => {
@@ -39,6 +45,22 @@ export const MapComponent = () => {
             }
         })()
     }, [location])
+
+    const handleSubmit = (values: FormValues) => {
+        if (!User) return
+        setLoading(true)
+        Firebase.firestore().collection("Address").add({
+            ...values,
+            userId: User.uid,
+            location, placeName
+        }).then(() => {
+            setIsOpen(false)
+            //@ts-ignore
+            nativate.navigate('home')
+            dispatch(setPlaceName(values.addressName))
+        }).finally(() => setLoading(false))
+
+    };
 
     return (
         <View className="h-screen">
@@ -111,7 +133,6 @@ export const MapComponent = () => {
                     <View className="absolute block bottom-14 bg-white p-5 w-full">
                         <Text className="font-semibold">{currentAdress}</Text>
                         <ButtonCompo
-                            //@ts-ignore
                             handelClick={() => {
                                 setIsOpen(!isOpen);
                             }}
@@ -122,13 +143,17 @@ export const MapComponent = () => {
                     </View>
                 </View>
             )}
-            {/* <Drawer
-                children={<Form currentAdress={currentAdress} />}
+            <Drawer
+                children={<Form
+                    currentAdress={currentAdress}
+                    handleSubmit={handleSubmit}
+                    loading={loading}
+                />}
                 onClose={() => setIsOpen(false)}
                 placement="bottom"
                 isOpen={isOpen}
-            /> */}
 
+            />
         </View>
     );
 };
@@ -147,141 +172,117 @@ const styles = StyleSheet.create({
 });
 
 
-// const Form = ({ currentAdress }: {
-//     currentAdress: string | null
-// }) => {
+const Form = ({ currentAdress, handleSubmit, loading }: {
+    currentAdress: string | null
+    handleSubmit: (values: FormValues) => void
+    loading: boolean
+}) => {
 
-//     type FormValues = {
-//         houseFlatNo: string;
-//         floorNumber: string;
-//         buildingName: string;
-//         howToReach: string;
-//         contactNumber: string;
-//         addressType: string;
-//     };
+    return (
+        <View>
+            <View className="py-2 flex flex-row gap-1 bg-gray-100 px-3">
+                <Text className="w-4/5">{currentAdress}</Text>
+                <Badge className="rounded-3xl bg-gray-200 self-center">Change</Badge>
+            </View>
+            <View className="bg-white p-3">
+                <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
+                    {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+                        <Box>
+                            <VStack space={1} width="90%" mx="auto">
+                                <FormControl isInvalid={Boolean(errors.houseFlatNo) && touched.contactNumber}>
+                                    <FormControl.Label>House/Flat No</FormControl.Label>
+                                    <Input
+                                        onBlur={handleBlur('houseFlatNo')}
+                                        onChangeText={handleChange('houseFlatNo')}
+                                        value={values.houseFlatNo}
+                                    />
+                                    <FormControl.ErrorMessage>{errors.houseFlatNo}</FormControl.ErrorMessage>
+                                </FormControl>
 
-//     const validationSchema = Yup.object().shape({
-//         houseFlatNo: Yup.string().required('Required'),
-//         floorNumber: Yup.string().required('Required'),
-//         buildingName: Yup.string().required('Required'),
-//         howToReach: Yup.string().required('Required'),
-//         contactNumber: Yup.string().required('Required'),
-//         addressType: Yup.string().required('Required'),
-//     });
-//     const initialValues: FormValues = {
-//         houseFlatNo: '',
-//         floorNumber: '',
-//         buildingName: '',
-//         howToReach: '',
-//         contactNumber: '',
-//         addressType: 'home',
-//     };
+                                {/* <FormControl isInvalid={Boolean(errors.floorNumber)}>
+                                    <FormControl.Label>Floor Number</FormControl.Label>
+                                    <Input
+                                        onBlur={handleBlur('floorNumber')}
+                                        onChangeText={handleChange('floorNumber')}
+                                        value={values.floorNumber}
+                                    />
+                                    <FormControl.ErrorMessage>{errors.floorNumber}</FormControl.ErrorMessage>
+                                </FormControl> */}
 
-//     const handleSubmit = (values: FormValues) => {
-//         console.log(values);
-//         // Handle form submission here
-//     };
+                                <FormControl isInvalid={Boolean(errors.buildingName) && touched.contactNumber}>
+                                    <FormControl.Label>Building/Apartment Name</FormControl.Label>
+                                    <Input
+                                        onBlur={handleBlur('buildingName')}
+                                        onChangeText={handleChange('buildingName')}
+                                        value={values.buildingName}
+                                    />
+                                    <FormControl.ErrorMessage>{errors.buildingName}</FormControl.ErrorMessage>
+                                </FormControl>
 
-//     return (
-//         <View>
-//             <View className="py-2 flex flex-row gap-1 bg-gray-100 px-3">
-//                 <Text className="w-4/5">{currentAdress}</Text>
-//                 <Badge className="rounded-3xl bg-gray-200 self-center">Change</Badge>
-//             </View>
-//             <View className="bg-white p-3">
-//                 <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
-//                     {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
-//                         <Box>
-//                             <VStack space={4} width="90%" mx="auto">
-//                                 <FormControl isInvalid={errors.houseFlatNo && touched.houseFlatNo}>
-//                                     <FormControl.Label>House/Flat No</FormControl.Label>
-//                                     <Input
-//                                         onBlur={handleBlur('houseFlatNo')}
-//                                         onChangeText={handleChange('houseFlatNo')}
-//                                         value={values.houseFlatNo}
-//                                     />
-//                                     <FormControl.ErrorMessage>{errors.houseFlatNo}</FormControl.ErrorMessage>
-//                                 </FormControl>
+                                {/* <FormControl isInvalid={Boolean(errors.howToReach) && touched.howToReach}>
+                                    <FormControl.Label>How to Reach</FormControl.Label>
+                                    <Input
+                                        onBlur={handleBlur('howToReach')}
+                                        onChangeText={handleChange('howToReach')}
+                                        value={values.howToReach}
+                                    />
+                                    <FormControl.ErrorMessage>{errors.howToReach}</FormControl.ErrorMessage>
+                                </FormControl> */}
 
-//                                 <FormControl isInvalid={errors.floorNumber && touched.floorNumber}>
-//                                     <FormControl.Label>Floor Number</FormControl.Label>
-//                                     <Input
-//                                         onBlur={handleBlur('floorNumber')}
-//                                         onChangeText={handleChange('floorNumber')}
-//                                         value={values.floorNumber}
-//                                     />
-//                                     <FormControl.ErrorMessage>{errors.floorNumber}</FormControl.ErrorMessage>
-//                                 </FormControl>
+                                <FormControl isInvalid={Boolean(errors.contactNumber) && touched.contactNumber}>
+                                    <FormControl.Label>Contact Number</FormControl.Label>
+                                    <Input
+                                        keyboardType="numeric"
+                                        onBlur={handleBlur('contactNumber')}
+                                        onChangeText={handleChange('contactNumber')}
+                                        value={values.contactNumber}
+                                    />
+                                    <FormControl.ErrorMessage>{errors.contactNumber}</FormControl.ErrorMessage>
+                                </FormControl>
 
-//                                 <FormControl isInvalid={errors.buildingName && touched.buildingName}>
-//                                     <FormControl.Label>Building/Apartment Name</FormControl.Label>
-//                                     <Input
-//                                         onBlur={handleBlur('buildingName')}
-//                                         onChangeText={handleChange('buildingName')}
-//                                         value={values.buildingName}
-//                                     />
-//                                     <FormControl.ErrorMessage>{errors.buildingName}</FormControl.ErrorMessage>
-//                                 </FormControl>
+                                <FormControl isInvalid={Boolean(errors.addressName) && touched.addressName}>
+                                    <FormControl.Label>Address Name</FormControl.Label>
+                                    <Input
+                                        onBlur={handleBlur('addressName')}
+                                        onChangeText={handleChange('addressName')}
+                                        value={values.addressName}
+                                    />
+                                    <FormControl.ErrorMessage>{errors.addressName}</FormControl.ErrorMessage>
+                                </FormControl>
+                                <ButtonCompo
+                                    loading={loading} text={"Add address"} disable={loading} handelClick={handleSubmit} />
+                            </VStack>
+                        </Box>
+                    )}
+                </Formik>
+            </View>
+        </View>
+    );
+};
 
-//                                 <FormControl isInvalid={errors.howToReach && touched.howToReach}>
-//                                     <FormControl.Label>How to Reach</FormControl.Label>
-//                                     <Input
-//                                         onBlur={handleBlur('howToReach')}
-//                                         onChangeText={handleChange('howToReach')}
-//                                         value={values.howToReach}
-//                                     />
-//                                     <FormControl.ErrorMessage>{errors.howToReach}</FormControl.ErrorMessage>
-//                                 </FormControl>
 
-//                                 <FormControl isInvalid={errors.contactNumber && touched.contactNumber}>
-//                                     <FormControl.Label>Contact Number</FormControl.Label>
-//                                     <Input
-//                                         keyboardType="numeric"
-//                                         onBlur={handleBlur('contactNumber')}
-//                                         onChangeText={handleChange('contactNumber')}
-//                                         value={values.contactNumber}
-//                                     />
-//                                     <FormControl.ErrorMessage>{errors.contactNumber}</FormControl.ErrorMessage>
-//                                 </FormControl>
+type FormValues = {
+    houseFlatNo: string;
+    // floorNumber: string;
+    buildingName: string;
+    // howToReach: string;
+    contactNumber: string;
+    addressName: string
+};
 
-//                                 <FormControl isInvalid={errors.addressType && touched.addressType}>
-//                                     <FormControl.Label>Address Type</FormControl.Label>
-//                                     <Select
-//                                         selectedValue={values.addressType}
-//                                         onValueChange={handleChange('addressType')}
-//                                         _selectedItem={{
-//                                             bg: 'cyan.600',
-//                                             endIcon: <CheckIcon size={4} />,
-//                                         }}
-//                                     >
-//                                         <Select.Item label="Home" value="home" />
-//                                         <Select.Item label="Office" value="office" />
-//                                         <Select.Item label="Other" value="other" />
-//                                     </Select>
-//                                     <FormControl.ErrorMessage>{errors.addressType}</FormControl.ErrorMessage>
-//                                 </FormControl>
-
-//                                 {values.addressType === 'other' && (
-//                                     <FormControl>
-//                                         <FormControl.Label>Specify</FormControl.Label>
-//                                         <Input
-//                                             onBlur={handleBlur('addressType')}
-//                                             onChangeText={handleChange('addressType')}
-//                                             value={values.addressType}
-//                                         />
-//                                     </FormControl>
-//                                 )}
-
-//                                 <Button onPress={handleSubmit} colorScheme="cyan">
-//                                     Save
-//                                 </Button>
-//                             </VStack>
-//                         </Box>
-//                     )}
-//                 </Formik>
-//                 <ButtonCompo
-//                     loading={false} text={"Add addrekss"} disable={false} handelClick={() => 0} />
-//             </View>
-//         </View>
-//     );
-// };
+const validationSchema = Yup.object().shape({
+    houseFlatNo: Yup.string().required('Required'),
+    // floorNumber: Yup.string().required('Required'),
+    buildingName: Yup.string().required('Required'),
+    // howToReach: Yup.string().required('Required'),
+    contactNumber: Yup.string().required('Required'),
+    addressName: Yup.string().required('Required'),
+});
+const initialValues: FormValues = {
+    houseFlatNo: '',
+    // floorNumber: '',
+    buildingName: '',
+    // howToReach: '',
+    contactNumber: '',
+    addressName: '',
+};

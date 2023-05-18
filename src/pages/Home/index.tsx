@@ -1,24 +1,39 @@
-import { View, Text, Alert } from 'react-native'
-import React from 'react'
-import { Button } from 'native-base'
+import { View } from 'react-native'
+import React, { useEffect } from 'react'
 import { Firebase } from '../../../config'
-import { useDispatch } from 'react-redux'
-import { setUser, setUserDetails } from '../../redux/UserSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { setCategory, setProducts } from '../../redux/ProductsSlice'
+import Categorys from './Categorys'
+import { RootState } from '../../redux'
+import ProductCard from '../../components/ProductCard'
+import { FlatList, ScrollView } from 'react-native-gesture-handler'
+import ButtomNavBar from '../../components/ButtomNavBar'
 
 const Home = () => {
     const dispatch = useDispatch()
+    const { Products } = useSelector((state: RootState) => state.Listings)
+    useEffect(() => {
+        Firebase.firestore().collection("Catogory").get()
+            .then(res => {
+                dispatch(setCategory(res.docs.map(doc => ({ ...doc.data(), id: doc.id }))))
+            })
+        Firebase.firestore().collection("Product").get()
+            .then(res => {
+                dispatch(setProducts(res.docs.map(doc => ({ ...doc.data(), id: doc.id }))))
+            })
+    }, [])
+
     return (
-        <View>
-            <Text>index</Text>
-            <Button
-                onPress={() => {
-                    Firebase.auth().signOut().then(() => {
-                        Alert.alert("Loggedout")
-                        dispatch(setUser(null))
-                        dispatch(setUserDetails(null))
-                    })
-                }}
-            >Log Out</Button>
+        <View style={{ flex: 1 }}>
+            <Categorys />
+            <FlatList
+                keyboardShouldPersistTaps='always' //open keyboard
+                data={Products}
+                renderItem={({ item }) => <ProductCard key={item.id} product={item} />}
+                keyExtractor={(item) => item.id}
+                className='my-3'
+            />
+            <ButtomNavBar />
         </View>
     )
 }

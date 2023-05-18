@@ -16,6 +16,7 @@ import {
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import RoundImageButton from './AvatarCompo';
+import ButtonCompo from '../../components/button';
 
 const validationSchema = yup.object().shape({
     name: yup.string().required('Name is required'),
@@ -36,7 +37,7 @@ const validationSchema = yup.object().shape({
 });
 
 const ProfileForm = ({
-    onSave, setImage, image }: any) => {
+    onSave, setImage, image, loading }: any) => {
     return (
         // <KeyboardShift>
         <Formik
@@ -63,13 +64,12 @@ const ProfileForm = ({
                             </View>
                         </HStack>
                         <ScrollView h="xl">
-                            <View className='p-4'>
+                            <View className='p-4 pb-32'>
                                 <FormControl isInvalid={Boolean(errors.name) && touched.name}>
                                     <FormControl.Label>Name</FormControl.Label>
                                     <Input
                                         value={values.name}
                                         onChangeText={handleChange('name')}
-                                        onBlur={handleBlur('name')}
                                     />
                                     <FormControl.ErrorMessage>{errors.name}</FormControl.ErrorMessage>
                                 </FormControl>
@@ -78,7 +78,6 @@ const ProfileForm = ({
                                     <Input
                                         value={values.businessName}
                                         onChangeText={handleChange('businessName')}
-                                        onBlur={handleBlur('businessName')}
                                     />
                                     <FormControl.ErrorMessage>{errors.businessName}</FormControl.ErrorMessage>
                                 </FormControl>
@@ -97,7 +96,6 @@ const ProfileForm = ({
                                     <Input
                                         value={values.email}
                                         onChangeText={handleChange('email')}
-                                        onBlur={handleBlur('email')}
                                         keyboardType="email-address"
                                     />
                                     <FormControl.ErrorMessage>{errors.email}</FormControl.ErrorMessage>
@@ -107,7 +105,7 @@ const ProfileForm = ({
                                     <TextArea
                                         value={values.address}
                                         onChangeText={handleChange('address')}
-                                        onBlur={handleBlur('address')} autoCompleteType={undefined} />
+                                        autoCompleteType={undefined} />
                                     <FormControl.ErrorMessage>{errors.address}</FormControl.ErrorMessage>
                                 </FormControl>
                                 <FormControl isInvalid={Boolean(errors.pincode) && touched.pincode}>
@@ -115,7 +113,6 @@ const ProfileForm = ({
                                     <Input
                                         value={values.pincode}
                                         onChangeText={handleChange('pincode')}
-                                        onBlur={handleBlur('pincode')}
                                         keyboardType="number-pad"
                                     />
                                     <FormControl.ErrorMessage>{errors.pincode}</FormControl.ErrorMessage>
@@ -125,7 +122,6 @@ const ProfileForm = ({
                                     <Input
                                         value={values.city}
                                         onChangeText={handleChange('city')}
-                                        onBlur={handleBlur('city')}
                                     />
                                     <FormControl.ErrorMessage>{errors.city}</FormControl.ErrorMessage>
                                 </FormControl>
@@ -136,8 +132,10 @@ const ProfileForm = ({
                                         selectedValue={values.state}
                                         onValueChange={handleChange('state')}
                                         _selectedItem={{
-                                            bg: 'teal.600',
+                                            bg: 'gray.200',
                                             endIcon: <Text>✔</Text>,
+                                            borderRadius: "xl",
+                                            color: "blue.100"
                                         }}
                                     >
                                         {states.map((state, index) => (
@@ -151,16 +149,17 @@ const ProfileForm = ({
                                     <Input
                                         value={values.gstNumber}
                                         onChangeText={handleChange('gstNumber')}
-                                        onBlur={handleBlur('gstNumber')}
                                         maxLength={11}
                                         keyboardType="default"
                                     />
                                     <FormControl.ErrorMessage>{errors.gstNumber}</FormControl.ErrorMessage>
                                 </FormControl>
-                                {/*@ts-ignore */}
-                                <Button onPress={handleSubmit} bg="primary.500" mt={4} _text={{ color: 'white' }}>
-                                    Save Changes
-                                </Button>
+                                <ButtonCompo
+                                    handelClick={handleSubmit}
+                                    text='Confirm'
+                                    disable={false}
+                                    loading={loading}
+                                />
                             </View>
                         </ScrollView>
                     </VStack>

@@ -2,8 +2,7 @@
 import * as functions from "firebase-functions";
 import axios from "axios";
 import * as admin from "firebase-admin";
-admin.initializeApp();
-
+import {auth} from "./config";
 
 exports.addMessage = functions.https.onCall(async (data, context) => {
   const {auth} = context;
@@ -110,4 +109,19 @@ exports.getLongAndLat = functions.https
       throw new functions.https.HttpsError("internal",
         "An error occurred while retrieving location suggestions.");
     }
+  });
+
+const grantAdminRole = async (email: string): Promise<void> => {
+  const user = await auth.getUserByEmail(email);
+  if (user.customClaims && (user.customClaims as any).admin === true) {
+    return;
+  }
+  return auth.setCustomUserClaims(user.uid, {
+    admin: true,
+  });
+};
+
+export const addAdmin = functions
+  .https.onCall(({email}: { email: string }) => {
+    return grantAdminRole(email);
   });

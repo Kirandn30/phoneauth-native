@@ -7,7 +7,7 @@ import { RootState } from './redux'
 import UserDetails from './pages/userDetails'
 import FirebaseOTP from './pages/Auth'
 import { Avatar, Button, StatusBar } from 'native-base'
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigation, useRoute } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Home from './pages/Home'
 import { Keyboard } from 'react-native'
@@ -16,6 +16,9 @@ import GetLocation from './components/GetLocation'
 import GetLocationDetails from './pages/maps'
 import GoBack from './components/GoBack'
 import LocationInfo from './pages/maps/LocationInfo'
+import Products from './pages/Products'
+import { BottomSheetAndroid } from '@react-navigation/stack/lib/typescript/src/TransitionConfigs/TransitionPresets'
+import ButtomNavBar from './components/ButtomNavBar'
 
 
 const Pages = () => {
@@ -23,7 +26,6 @@ const Pages = () => {
     const { User, userDetails } = useSelector((state: RootState) => state.User)
     const dispatch = useDispatch()
     const [loading, setLoading] = useState(true);
-
     useEffect(() => {
         const unsub = Firebase.auth().onAuthStateChanged((user) => {
             if (user) {
@@ -58,7 +60,7 @@ const Pages = () => {
 
 
     if (User && userDetails) {
-    return (
+        return (
             <NavigationContainer>
                 <Stack.Navigator>
                     <Stack.Screen
@@ -81,6 +83,15 @@ const Pages = () => {
                         name='Location Information'
                         component={LocationInfo}
                         options={{
+                            headerLeft: () => (<GoBack />),
+                        }}
+                    />
+                    <Stack.Screen
+                        name='Products'
+                        //@ts-ignore
+                        component={Products}
+                        options={{
+                            headerRight: () => (<ProfileManagment />),
                             headerLeft: () => (<GoBack />),
                         }}
                     />

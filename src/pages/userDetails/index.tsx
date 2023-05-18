@@ -6,23 +6,26 @@ import ProfileForm from './FormDeatils';
 import { Firebase } from '../../../config';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux';
-import { setUserDetails } from '../../redux/UserSlice';
+import { setUser, setUserDetails } from '../../redux/UserSlice';
 
 const UserDetails = () => {
     const { User } = useSelector((state: RootState) => state.User)
     const [image, setImage] = useState<{ error: boolean, uri: null | string }>({ error: false, uri: null });
     const dispatch = useDispatch()
+    const [loading, setLoading] = useState(false)
     const handleBack = () => {
         // Handle the back button action
     };
 
     const handleRightButtonPress = () => {
-        // Handle the right button action
+        Firebase.auth().signOut().then(() => {
+            dispatch(setUser(null))
+        })
     };
     const handleSave = async (formData: any) => {
         try {
             if (image.uri && User?.uid) {
-
+                setLoading(true)
                 const response = await fetch(image.uri);
                 const blob = await response.blob();
                 // Use `firebase.storage()` instead of `Firebase.storage()`
@@ -53,6 +56,8 @@ const UserDetails = () => {
             }
         } catch (error) {
             console.log("this error", error);
+        } finally {
+            setLoading(false)
         }
     };
 
@@ -63,7 +68,7 @@ const UserDetails = () => {
                 <UserDeatilsHeader title="My Profile" onBack={handleBack} onRightButtonPress={handleRightButtonPress} />
                 <Box safeArea>
                     <VStack justifyContent="center">
-                        <ProfileForm onSave={handleSave} setImage={setImage} image={image} />
+                        <ProfileForm onSave={handleSave} setImage={setImage} image={image} loading={loading} />
                     </VStack>
                 </Box>
             </VStack>
