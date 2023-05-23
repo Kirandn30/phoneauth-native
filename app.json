@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "meatforyou",
-    "slug": "meat-for-you",
+    "slug": "meatforyou",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -27,8 +27,7 @@
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "We need your location to show it on the map.",
         "NSLocationAlwaysUsageDescription": "We need your location to show it on the map."
-      },
-      "bundleIdentifier": "com.kirandn.meatforyou"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -48,12 +47,6 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "a7037e0d-1529-4131-b35e-a83fd7c22c2b"
-      }
-    },
-    "owner": "meatforyou"
+    }
   }
 }

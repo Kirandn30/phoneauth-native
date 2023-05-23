@@ -18,11 +18,11 @@ const LocationAccess = () => {
     const navigation = useNavigation();
     const dispatch = useDispatch()
     const { location, placeName } = useSelector((state: RootState) => state.Location)
+
     useEffect(() => {
         (async () => {
             try {
                 let { status } = await Location.requestForegroundPermissionsAsync();
-                console.log(status);
                 if (status !== 'granted') {
                     Alert.alert(
                         'Permission Denied',
@@ -31,8 +31,10 @@ const LocationAccess = () => {
                     );
                     return;
                 }
+                console.log("Start");
                 let currentLocation = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Highest });
                 const { latitude, longitude } = currentLocation.coords;
+                console.log(latitude, longitude);
                 const addMessage = Firebase.functions().httpsCallable('addMessage');
                 const coordinates = {
                     latitude,

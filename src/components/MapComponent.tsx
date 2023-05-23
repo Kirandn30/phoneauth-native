@@ -13,6 +13,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 import * as Yup from "yup"
 import { Formik } from "formik";
+import React from "react";
 
 export const MapComponent = () => {
     const { location, placeName } = useSelector((state: RootState) => state.Location)
@@ -56,7 +57,7 @@ export const MapComponent = () => {
         }).then(() => {
             setIsOpen(false)
             //@ts-ignore
-            nativate.navigate('home')
+            nativate.navigate('Home')
             dispatch(setPlaceName(values.addressName))
         }).finally(() => setLoading(false))
 

@@ -29,7 +29,7 @@ interface IProductBase {
 
 interface IVariantType {
     id: string;
-    productId: string;
+    ProductId: string;
     name: string;
     weight: number;
     unit: "gm" | "kg"
@@ -47,7 +47,7 @@ interface IVariantType {
 }
 interface IRatingType {
     id: string;
-    productId: string;
+    ProductId: string;
     userId: string;
     rating: number;
     comment?: string;
@@ -96,7 +96,7 @@ const products: IProductType[] = [
         variantes: [
             {
                 id: "1",
-                productId: "1",
+                ProductId: "1",
                 name: "500g, A Grade, Fresh, Pack of 4",
                 weight: 500,
                 unit: "gm",
@@ -111,7 +111,7 @@ const products: IProductType[] = [
             },
             {
                 id: "2",
-                productId: "1",
+                ProductId: "1",
                 name: "1kg, B Grade, Frozen, Pack of 8",
                 weight: 1000,
                 grade: "B",
@@ -139,7 +139,7 @@ const products: IProductType[] = [
         variantes: [
             {
                 id: "3",
-                productId: "2",
+                ProductId: "2",
                 name: "500g, Fresh, Pack of 10",
                 weight: 500,
                 freshness: "Fresh",
@@ -153,7 +153,7 @@ const products: IProductType[] = [
             },
             {
                 id: "4",
-                productId: "2",
+                ProductId: "2",
                 name: "1kg, Frozen, Pack of 20",
                 weight: 1000,
                 freshness: "Frozen",
@@ -180,7 +180,7 @@ const products: IProductType[] = [
         variantes: [
             {
                 id: "5",
-                productId: "3",
+                ProductId: "3",
                 name: "500g, Fresh, Pack of 4",
                 weight: 500,
                 freshness: "Fresh",
@@ -194,7 +194,7 @@ const products: IProductType[] = [
             },
             {
                 id: "6",
-                productId: "3",
+                ProductId: "3",
                 name: "1kg, Frozen, Pack of 8",
                 weight: 1000,
                 unit: "gm",
@@ -219,7 +219,7 @@ const products: IProductType[] = [
         variantes: [
             {
                 id: "7",
-                productId: "4",
+                ProductId: "4",
                 name: "500g, Fresh, Pack of 10",
                 weight: 500,
                 freshness: "Fresh",
@@ -233,7 +233,7 @@ const products: IProductType[] = [
             },
             {
                 id: "8",
-                productId: "4",
+                ProductId: "4",
                 name: "1kg, Frozen, Pack of 20",
                 weight: 1000,
                 freshness: "Frozen",
@@ -260,7 +260,7 @@ const products: IProductType[] = [
         variantes: [
             {
                 id: "9",
-                productId: "5",
+                ProductId: "5",
                 name: "500g, Fresh, Pack of 4",
                 weight: 500,
                 freshness: "Fresh",
@@ -272,7 +272,7 @@ const products: IProductType[] = [
             },
             {
                 id: "10",
-                productId: "5",
+                ProductId: "5",
                 name: "1kg, Frozen, Pack of 8",
                 weight: 1000,
                 freshness: "Frozen",
@@ -299,7 +299,7 @@ const products: IProductType[] = [
         variantes: [
             {
                 id: "11",
-                productId: "6",
+                ProductId: "6",
                 name: "500g, Fresh, Pack of 2",
                 weight: 500,
                 freshness: "Fresh",
@@ -311,7 +311,7 @@ const products: IProductType[] = [
             },
             {
                 id: "12",
-                productId: "6",
+                ProductId: "6",
                 name: "1kg, Frozen, Pack of 4",
                 weight: 1000,
                 freshness: "Frozen",

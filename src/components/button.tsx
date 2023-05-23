@@ -9,7 +9,7 @@ const ButtonCompo = ({ handelClick, text, disable, loading }: { loading: boolean
                 isLoading={loading}
                 isDisabled={disable}
                 id={JSON.stringify(Date.now())}
-                className='mt-5 active:bg-black'
+                className='active:bg-black'
                 bg="primary.50"
                 onPress={handelClick}
             >{text}</Button>

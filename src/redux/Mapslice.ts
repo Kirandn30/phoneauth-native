@@ -7,12 +7,14 @@ interface MapsType {
         longitude: number
         longitudeDelta?: number
     } | null,
-    placeName: null | string
+    placeName: null | string,
+    addresses: any[]
 }
 
 const initialState: MapsType = {
     location: null,
-    placeName: null
+    placeName: null,
+    addresses: []
 }
 
 const LocationSlice = createSlice({
@@ -25,10 +27,13 @@ const LocationSlice = createSlice({
         setPlaceName: (state, action) => {
             state.placeName = action.payload
         },
+        setAddresses: (state, action) => {
+            state.addresses = action.payload
+        }
 
     },
 })
 
-export const { setLocation, setPlaceName } = LocationSlice.actions
+export const { setLocation, setPlaceName, setAddresses } = LocationSlice.actions
 
 export default LocationSlice.reducer

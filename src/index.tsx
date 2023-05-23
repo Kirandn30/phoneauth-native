@@ -17,14 +17,18 @@ import GetLocationDetails from './pages/maps'
 import GoBack from './components/GoBack'
 import LocationInfo from './pages/maps/LocationInfo'
 import Products from './pages/Products'
-import { BottomSheetAndroid } from '@react-navigation/stack/lib/typescript/src/TransitionConfigs/TransitionPresets'
 import ButtomNavBar from './components/ButtomNavBar'
+import Contact from './pages/Contact'
+import Orders from './pages/Orders'
+import Cart from './pages/Cart'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 
 const Pages = () => {
     const Stack = createStackNavigator();
     const { User, userDetails } = useSelector((state: RootState) => state.User)
     const dispatch = useDispatch()
+    const Tab = createBottomTabNavigator();
     const [loading, setLoading] = useState(true);
     useEffect(() => {
         const unsub = Firebase.auth().onAuthStateChanged((user) => {
@@ -64,7 +68,7 @@ const Pages = () => {
             <NavigationContainer>
                 <Stack.Navigator>
                     <Stack.Screen
-                        name='home'
+                        name='Home'
                         component={Home}
                         options={{
                             headerRight: () => (<ProfileManagment />),
@@ -87,6 +91,27 @@ const Pages = () => {
                         }}
                     />
                     <Stack.Screen
+                        name='Cart'
+                        component={Cart}
+                        options={{
+                            headerLeft: () => (<GoBack />),
+                        }}
+                    />
+                    <Stack.Screen
+                        name='Orders'
+                        component={Orders}
+                        options={{
+                            headerLeft: () => (<GoBack />),
+                        }}
+                    />
+                    <Stack.Screen
+                        name='Contact'
+                        component={Contact}
+                        options={{
+                            headerLeft: () => (<GoBack />),
+                        }}
+                    />
+                    <Stack.Screen
                         name='Products'
                         //@ts-ignore
                         component={Products}
@@ -100,19 +125,11 @@ const Pages = () => {
         )
     } else if (User && !userDetails) {
         return (<View className="min-h-screen bg-white">
-            <StatusBar
-                animated={true}
-                backgroundColor="#000000"
-            />
             <UserDetails />
         </View>)
     } else {
         return (
             <View className="min-h-screen bg-white">
-                <StatusBar
-                    animated={true}
-                    backgroundColor="#000000"
-                />
                 <FirebaseOTP />
             </View>
         )

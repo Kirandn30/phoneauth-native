@@ -84,7 +84,7 @@ const PhoneAuth = () => {
                             </View>
                             <CustomKeyboardAvoidingView>
                                 <View className='w-4/5 m-auto mt-10 space-y-3 h-48'>
-                                    {!verificationId && <View>
+                                    <View>
                                         <FormControl isInvalid={notValid} >
                                             <FormControl.Label>Phone Number</FormControl.Label>
                                             <Input
@@ -111,7 +111,7 @@ const PhoneAuth = () => {
                                                 Enter a valid phone number.
                                             </FormControl.ErrorMessage>
                                         </FormControl>
-                                    </View>}
+                                    </View>
                                     {verificationId && <View>
                                         <FormControl isInvalid={validOTP} >
                                             <FormControl.Label>OTP</FormControl.Label>

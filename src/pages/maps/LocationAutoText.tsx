@@ -4,7 +4,7 @@ import { debounce } from 'lodash';
 import { Firebase } from '../../../config';
 import { Divider, Icon, Input, Spinner } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
-import { setLocation, setPlaceName } from '../../redux/Mapslice';
+import { setAddresses, setLocation, setPlaceName } from '../../redux/Mapslice';
 import { useDispatch, useSelector } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
@@ -27,7 +27,7 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = () => {
     const navigation = useNavigation();
     const dispatch = useDispatch()
     const { User } = useSelector((state: RootState) => state.User)
-    const [addresses, setAddresses] = useState<any[]>([])
+    const { addresses } = useSelector((state: RootState) => state.Location)
 
     const handleQueryChange = (text: string) => {
         setQuery(text);
@@ -38,7 +38,7 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = () => {
         if (!User) return
         Firebase.firestore().collection("Address").where("userId", "==", User.uid).get()
             .then((res) => {
-                setAddresses(res.docs.map(doc => ({ ...doc.data(), id: doc.id })))
+                dispatch(setAddresses(res.docs.map(doc => ({ ...doc.data(), id: doc.id }))))
             })
     }, [])
 
@@ -67,7 +67,7 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = () => {
                 dispatch(setPlaceName(item.addressName))
                 dispatch(setLocation(item.location))
                 //@ts-ignore
-                navigation.navigate('home')
+                navigation.navigate('Home')
             }}>
                 <View className='p-3 py-1 border-solid border-[1px] border-gray-300 rounded-lg space-y-1 bg-red-50 my-1'>
                     <Text className='text-lg font-semibold '>{item.addressName}</Text>
@@ -172,7 +172,7 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = () => {
                                             longitude: longitude
                                         }))
                                         //@ts-ignore
-                                        navigation.navigate("home")
+                                        navigation.navigate("Home")
                                     } else {
                                         Alert.alert("Error fetching location try again")
                                     }

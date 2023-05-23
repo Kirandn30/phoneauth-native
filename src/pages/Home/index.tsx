@@ -8,6 +8,8 @@ import { RootState } from '../../redux'
 import ProductCard from '../../components/ProductCard'
 import { FlatList, ScrollView } from 'react-native-gesture-handler'
 import ButtomNavBar from '../../components/ButtomNavBar'
+import { Text } from 'native-base'
+import SearchBar from '../../components/SearchBar'
 
 const Home = () => {
     const dispatch = useDispatch()
@@ -24,15 +26,12 @@ const Home = () => {
     }, [])
 
     return (
-        <View style={{ flex: 1 }}>
+        <View className='bg-red-50 flex-1 justify-between'>
+            <SearchBar />
             <Categorys />
-            <FlatList
-                keyboardShouldPersistTaps='always' //open keyboard
-                data={Products}
-                renderItem={({ item }) => <ProductCard key={item.id} product={item} />}
-                keyExtractor={(item) => item.id}
-                className='my-3'
-            />
+            <View className='grow'>
+                <Text></Text>
+            </View>
             <ButtomNavBar />
         </View>
     )

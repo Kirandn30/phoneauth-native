@@ -4,6 +4,7 @@ import { Pressable, View } from "react-native";
 import { Text } from "react-native-svg";
 import { Firebase } from "../../config";
 import { useNavigation } from "@react-navigation/native";
+import React from "react";
 
 export function PopOverCompo({ children, }: { children: ReactNode }) {
     const navigate = useNavigation()
@@ -35,7 +36,7 @@ export function PopOverCompo({ children, }: { children: ReactNode }) {
                         colorScheme="danger"
                         onPress={() => {
                             //@ts-ignore
-                            Firebase.auth().signOut().then(() => navigate.navigate("home"))
+                            Firebase.auth().signOut().then(() => navigate.navigate("Home"))
                         }}
                     >Sign Out</Button>
                 </Popover.Body>

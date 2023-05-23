@@ -22,17 +22,21 @@ const ListingSlice = createSlice({
         },
         setProducts: (state, action) => {
             state.Products = action.payload
+        },
+        setVariants: (state, action) => {
+            state.Variants = action.payload
         }
     },
 })
 
-export const { setCategory, setProducts } = ListingSlice.actions
+export const { setCategory, setProducts, setVariants } = ListingSlice.actions
 
 export default ListingSlice.reducer
 
 export interface IVariantType {
     id: string;
-    productId: string;
+    ProductId: string;
+    categoryId: string
     name: string;
     weight: number;
     unit: "gm" | "kg"
@@ -50,7 +54,7 @@ export interface IVariantType {
 }
 export interface IRatingType {
     id: string;
-    productId: string;
+    ProductId: string;
     userId: string;
     rating: number;
     comment?: string;

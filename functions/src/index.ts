@@ -3,6 +3,7 @@ import * as functions from "firebase-functions";
 import axios from "axios";
 import * as admin from "firebase-admin";
 import {auth} from "./config";
+import * as Razorpay from "razorpay";
 
 exports.addMessage = functions.https.onCall(async (data, context) => {
   const {auth} = context;
@@ -124,4 +125,34 @@ const grantAdminRole = async (email: string): Promise<void> => {
 export const addAdmin = functions
   .https.onCall(({email}: { email: string }) => {
     return grantAdminRole(email);
+  });
+
+
+const instance =
+  new Razorpay(
+    {
+      key_id: "rzp_test_0IQb4FosmbMcvb",
+      key_secret: "ertITKwjuiOJjFjrXITSrTX0",
+    });
+
+
+exports.getOrderId = functions.https
+  .onCall(async (docId: string) => {
+    const OrderData = await admin.firestore()
+      .collection("Orders").doc(docId).get();
+    if (OrderData.exists) {
+      const data = OrderData.data() as any;
+      const orderId = await instance.orders.create({
+        amount: Number(data.total_price) * 100,
+        currency: "INR",
+        receipt: docId,
+        notes: {
+          key1: "value3",
+          key2: "value2",
+        },
+      });
+      return {orderid: orderId};
+    } else {
+      return {error: "Invalid payment link"};
+    }
   });

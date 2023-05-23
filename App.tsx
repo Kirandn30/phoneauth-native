@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Button, Text, View, DeviceEventEmitter, Platform, TouchableWithoutFeedback } from 'react-native';
 import FirebaseOTP from './src/pages/Auth';
 import { Firebase } from './config';
-import { NativeBaseProvider, extendTheme } from 'native-base';
+import { NativeBaseProvider, StatusBar, extendTheme } from 'native-base';
 import UserDetails from './src/pages/userDetails';
 import { Provider } from 'react-redux';
 import { RootState, store } from './src/redux';
@@ -16,6 +16,10 @@ export default function App() {
   return (
     <Provider store={store}>
       <NativeBaseProvider theme={theme}>
+        <StatusBar
+          animated={true}
+          backgroundColor="#000000"
+        />
         <Pages />
       </NativeBaseProvider>
     </Provider>

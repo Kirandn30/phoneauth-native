@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit'
 import UserSlice from './UserSlice'
 import LocationSlice from "./Mapslice"
 import ListingSlice from "./ProductsSlice"
+import CartSlice from './CartSlice'
 
 export const store = configureStore({
     reducer: {
         User: UserSlice,
         Location: LocationSlice,
-        Listings: ListingSlice
+        Listings: ListingSlice,
+        Cart: CartSlice
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
